@@ -8,7 +8,7 @@ class QueueManger(BaseManager):
 QueueManger.register('get_task_queue')
 QueueManger.register('get_result_queue')
 
-server_addr = '127.0.0.1'
+server_addr = '192.168.0.103'
 port = 8001
 authkey = 'zhangze'.encode('utf-8')
 m=QueueManger(address=(server_addr,port), authkey=authkey)
