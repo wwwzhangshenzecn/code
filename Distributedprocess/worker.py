@@ -21,13 +21,13 @@ def work():
     print('work begin')
     while(1):
         try:
-            image_url = task.get(True, timeout=5)
-            print('Get task: ', image_url)
+            t = task.get(True, timeout=5)
+            print('Get task: ', t)
             time.sleep(random.randint(0,5))
-            result.put('sucess------>>>>>   {}'.format(image_url))
+            result.put(t)
         except:
             print('Empty task')
-            time.sleep(5)
+            # time.sleep(0.1)
             m.connect()
             task = m.get_task_queue()
             result = m.get_result_queue()
