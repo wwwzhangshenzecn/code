@@ -7,11 +7,11 @@ queue =Queue()
 
 #config
 task_nums = 20
-Distributed_server_addr = '192.168.0.103'
+Distributed_server_addr = '127.0.0.1'
 Distributed_server_port = 8001
 authkey = 'zhangze'.encode('utf-8')
 
-server_addr = '192.168.0.103'
+server_addr = '127.0.0.1'
 port = 8000
 
 # 收发队列
