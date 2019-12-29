@@ -29,6 +29,6 @@ def client(data):
 
 if __name__ == '__main__':
 
-    data = [ i for i in range(int(input()))]
+    data = [ [1,{'a':1,'b':2}] for i in range(int(input()))]
     client(data)
 

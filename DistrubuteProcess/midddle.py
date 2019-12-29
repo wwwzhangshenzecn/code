@@ -5,7 +5,7 @@ from multiprocessing import Process
 import time
 from DistrubuteProcess.Manager import QueueManager, SERVER
 
-#任务队列
+# 任务队列
 queue = Queue()
 returnQueue = Queue()
 
@@ -16,6 +16,7 @@ authkey = 'zhangze'.encode('utf-8')
 
 server_addr = '192.168.0.103'
 port = 8000
+
 
 def win_run(queue, returnQueue):
     # 将管理器注册，并进行任务绑定
@@ -32,10 +33,31 @@ def win_run(queue, returnQueue):
         returnResult = []
         try:
             tasks = queue.get()
-            print('Get tasks :', tasks)
+            count = 0
             for t in tasks:
+                if not isinstance(t, list) or len(t) > 2 or len(t) == 0:
+                    print('抛弃任务： {}'.format(t))
+                    print("\n任务格式必须为 [tuple(), dict()]\n")
+                    returnResult.append('\n任务格式必须为: [ tuple(), dict() ]\n')
+                    continue
+
+                if len(t) == 1:
+                    if isinstance(t[0], tuple):
+                        t.append({})
+                    if isinstance(t[0], dict):
+                        t.insert(0, tuple())
+
+                if not isinstance(t[0], tuple) or not isinstance(t[1],dict):
+                    print('抛弃任务： {}'.format(t))
+                    print("任务格式必须为 [tuple(), dict()]\n")
+                    returnResult.append('\n任务格式必须为: [ tuple(), dict() ]\n')
+                    continue
+
+                print('Get tasks :', tasks)
+                count += 1
                 task.put(t)
-            for i in range(len(tasks)):
+
+            for i in range(count):
                 returnResult.append(result.get())
 
             returnQueue.put(returnResult)
@@ -62,7 +84,6 @@ def main():
     p1.start()
     p2.start()
 
+
 if __name__ == '__main__':
-
     main()
-
