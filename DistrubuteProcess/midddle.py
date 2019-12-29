@@ -29,36 +29,42 @@ def win_run(queue, returnQueue):
     result = manager.get_results_queue()
     returnResult = []
 
+    argserror = '\n任务格式必须为: [ name:str,args:tuple, kwargs:dict ]\n'
+
     while (1):
         returnResult = []
         try:
             tasks = queue.get()
             count = 0
+
             for t in tasks:
-                if not isinstance(t, list) or len(t) > 2 or len(t) == 0:
+                if not isinstance(t, list) or len(t) > 3 or len(t) == 0:
                     print('抛弃任务： {}'.format(t))
-                    print("\n任务格式必须为 [tuple(), dict()]\n")
-                    returnResult.append('\n任务格式必须为: [ tuple(), dict() ]\n')
+                    returnResult.append(argserror)
                     continue
 
-                if len(t) == 1:
-                    if isinstance(t[0], tuple):
+                elif not isinstance(t[0], str):
+                    print('抛弃任务： {}'.format(t))
+                    returnResult.append(argserror)
+                    continue
+
+                if len(t) == 2:
+                    if isinstance(t[1], tuple):
                         t.append({})
-                    if isinstance(t[0], dict):
-                        t.insert(0, tuple())
+                    if isinstance(t[1], dict):
+                        t.insert(1, tuple())
 
-                if not isinstance(t[0], tuple) or not isinstance(t[1],dict):
+                if not isinstance(t[1], tuple) or not isinstance(t[2], dict) or not isinstance(t[0], str):
                     print('抛弃任务： {}'.format(t))
-                    print("任务格式必须为 [tuple(), dict()]\n")
-                    returnResult.append('\n任务格式必须为: [ tuple(), dict() ]\n')
+                    returnResult.append(argserror)
                     continue
 
-                print('Get tasks :', tasks)
                 count += 1
+                print('ready tasks: ', t)
                 task.put(t)
 
             for i in range(count):
-                returnResult.append(result.get())
+                returnResult.append(result.get(timeout=10))
 
             returnQueue.put(returnResult)
         except:

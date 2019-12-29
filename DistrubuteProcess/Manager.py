@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 from multiprocessing.managers import BaseManager
 from multiprocessing import Queue
 import pickle, socket, time
-
+import functools
 
 
 class QueueManager(BaseManager):
@@ -83,3 +83,6 @@ class SERVER:
             total_data += data
             if not data: break
         return total_data
+
+
+
