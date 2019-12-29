@@ -1,7 +1,10 @@
 import socket, pickle,time
+import configparser
+conf = configparser.ConfigParser()
+conf.read('config.ini')
 
-server_addr = '127.0.0.1'
-port = 8000
+server_addr = conf.get('server','ip')
+server_port = int(conf.get('server','port'))
 
 
 def recv_basic(client, lenght):
@@ -15,7 +18,7 @@ def recv_basic(client, lenght):
 def client(data):
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.connect((server_addr, port))
+    sock.connect((server_addr, server_port))
     time.sleep(0.5) # 有一个小问题，如果不休眠，服务器可能会被卡在第二次接收状态
     data = pickle.dumps(data)
     sock.sendall(pickle.dumps(len(data)))

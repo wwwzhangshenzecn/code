@@ -2,7 +2,6 @@ from __future__ import absolute_import, unicode_literals
 from multiprocessing.managers import BaseManager
 from multiprocessing import Queue
 import pickle, socket, time
-import functools
 
 
 class QueueManager(BaseManager):

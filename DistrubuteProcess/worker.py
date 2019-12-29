@@ -20,16 +20,25 @@ worker.work()
 '''
 
 from DistrubuteProcess.Manager import QueueManager
+import configparser
+conf = configparser.ConfigParser()
+conf.read('config.ini')
+
+# config
+manager_addr = conf.get('manager','ip')
+manager_port = int(conf.get('manager','port'))
+authkey = str(conf.get('manager','authkey'))
 
 
 class Worker:
 
-    def __init__(self):
+    def __init__(self, manager_addr:str = manager_addr,
+                 manager_port:int=manager_port, authkey:str=authkey):
         self.func = {}
-        self.server_addr = '192.168.0.103'
-        self.port = 8001
-        self.authkey = 'zhangze'.encode('utf-8')
-        self.m = QueueManager(address=(self.server_addr, self.port), authkey=self.authkey)
+        self.manager_addr = manager_addr
+        self.manager_port = manager_port
+        self.authkey = authkey.encode('utf-8')
+        self.m = QueueManager(address=(self.manager_addr, self.manager_port), authkey=self.authkey)
         self.m.client()
         self.task = self.m.get_tasks_queue()
         self.result = self.m.get_results_queue()

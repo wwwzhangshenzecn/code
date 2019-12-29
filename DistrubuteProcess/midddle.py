@@ -1,28 +1,29 @@
 from __future__ import absolute_import, unicode_literals
 from multiprocessing import Queue, freeze_support
-import socket, pickle
 from multiprocessing import Process
-import time
 from DistrubuteProcess.Manager import QueueManager, SERVER
+import configparser
+conf = configparser.ConfigParser()
+conf.read('config.ini')
 
 # 任务队列
 queue = Queue()
 returnQueue = Queue()
 
 # config
-Distributed_server_addr = '192.168.0.103'
-Distributed_server_port = 8001
-authkey = 'zhangze'.encode('utf-8')
+manager_addr = conf.get('manager','ip')
+manager_port = int(conf.get('manager','port'))
+authkey = str(conf.get('manager','authkey'))
 
-server_addr = '192.168.0.103'
-port = 8000
+server_addr = conf.get('server','ip')
+server_port = int(conf.get('server','port'))
 
 
 def win_run(queue, returnQueue):
     # 将管理器注册，并进行任务绑定
 
-    manager = QueueManager(address=(Distributed_server_addr, Distributed_server_port),
-                           authkey=authkey)
+    manager = QueueManager(address=(manager_addr, manager_port),
+                           authkey=authkey.encode('utf-8'))
     manager.server()
 
     task = manager.get_tasks_queue()
@@ -76,7 +77,7 @@ def win_run(queue, returnQueue):
 
 
 def GETserver(que, returnQueue):
-    server = SERVER(server_addr, port)
+    server = SERVER('', server_port)
     server.start()
     server.recv(que, returnQueue)
 
