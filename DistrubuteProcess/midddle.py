@@ -1,34 +1,20 @@
 from __future__ import absolute_import, unicode_literals
 from multiprocessing import Queue, freeze_support
 from multiprocessing import Process
-from DistrubuteProcess.Manager import QueueManager, SERVER
-import configparser
-conf = configparser.ConfigParser()
-conf.read('config.ini')
+from multipleworks.Manager import QueueManager, SERVER
 
 # 任务队列
 queue = Queue()
 returnQueue = Queue()
 
-# config
-manager_addr = conf.get('manager','ip')
-manager_port = int(conf.get('manager','port'))
-authkey = str(conf.get('manager','authkey'))
-
-server_addr = conf.get('server','ip')
-server_port = int(conf.get('server','port'))
-
-
-def win_run(queue, returnQueue):
+def win_run(queue, returnQueue, addr, port, authkey):
     # 将管理器注册，并进行任务绑定
-
-    manager = QueueManager(address=(manager_addr, manager_port),
+    manager = QueueManager(address=(addr, port),
                            authkey=authkey.encode('utf-8'))
     manager.server()
 
     task = manager.get_tasks_queue()
     result = manager.get_results_queue()
-    returnResult = []
 
     argserror = '\n任务格式必须为: [ name:str,args:tuple, kwargs:dict ]\n'
 
@@ -76,21 +62,24 @@ def win_run(queue, returnQueue):
             result = manager.get_result_queue()
 
 
-def GETserver(que, returnQueue):
-    server = SERVER('', server_port)
+def GETserver(que, returnQueue, addr='', port=8000):
+    server = SERVER(addr, port)
     server.start()
     server.recv(que, returnQueue)
 
 
-def main():
-    # window下多进程可能有问题，添加这句话缓解
-    freeze_support()
-    print('start')
-    p1 = Process(target=GETserver, args=(queue, returnQueue,))
-    p2 = Process(target=win_run, args=(queue, returnQueue,))
-    p1.start()
-    p2.start()
+class middle:
+    def run(self, manager_addr='127.0.0.1', manager_port=8001,authkey='zhangze',
+            server_add='', server_port=8000):
+        # window下多进程可能有问题，添加这句话缓解
+        freeze_support()
+        print('start')
+        p1 = Process(target=GETserver, args=(queue, returnQueue,server_add, server_port))
+        p2 = Process(target=win_run, args=(queue, returnQueue,manager_addr,manager_port,authkey))
+        p1.start()
+        p2.start()
 
 
 if __name__ == '__main__':
-    main()
+
+    middle().run()

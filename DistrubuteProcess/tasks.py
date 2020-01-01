@@ -1,5 +1,5 @@
 import time
-from DistrubuteProcess.worker import Worker
+from multipleworks.worker import Worker
 
 
 def add(a, b=-1):
@@ -10,6 +10,11 @@ def add(a, b=-1):
 def mul(a, b):
     return a*b
 
-worker  = Worker()
-worker.register(mul)
-worker.work()
+class test:
+    def run(self):
+        worker = Worker()
+        worker.register([mul, add])
+        worker.work()
+
+if __name__ == '__main__':
+    test().run()

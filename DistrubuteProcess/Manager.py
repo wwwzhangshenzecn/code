@@ -3,7 +3,6 @@ from multiprocessing.managers import BaseManager
 from multiprocessing import Queue
 import pickle, socket, time
 
-
 class QueueManager(BaseManager):
 
     def get_tasks(self):

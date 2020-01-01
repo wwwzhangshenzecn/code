@@ -19,21 +19,12 @@ worker.work()
 
 '''
 
-from DistrubuteProcess.Manager import QueueManager
-import configparser
-conf = configparser.ConfigParser()
-conf.read('config.ini')
-
-# config
-manager_addr = conf.get('manager','ip')
-manager_port = int(conf.get('manager','port'))
-authkey = str(conf.get('manager','authkey'))
-
+from multipleworks.Manager import QueueManager
 
 class Worker:
 
-    def __init__(self, manager_addr:str = manager_addr,
-                 manager_port:int=manager_port, authkey:str=authkey):
+    def __init__(self, manager_addr:str = '127.0.0.1',
+                 manager_port:int=8001, authkey:str='zhangze'):
         self.func = {}
         self.manager_addr = manager_addr
         self.manager_port = manager_port
@@ -43,12 +34,29 @@ class Worker:
         self.task = self.m.get_tasks_queue()
         self.result = self.m.get_results_queue()
 
+
     def register(self, func):
         if isinstance(func, list):
             for f in func:
                 self.func[f.__name__] = f
         else:
             self.func[func.__name__] = func
+    def get_func(self):
+        return self.func
+
+    def attach(self, f):
+        try:
+            self.func[f.__name__]=f
+            return True
+        except:
+            return False
+
+    def detach(self, f):
+        if f.__name__ in self.func.keys():
+            self.func.pop(f.__name__)
+            return True
+        else:
+            return False
 
     def work(self):
         funcname_error = '不存在此函数 ：{}'
