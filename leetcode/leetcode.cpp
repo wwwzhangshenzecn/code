@@ -66,10 +66,10 @@ struct TreeNode {
 	TreeNode *left;
 	TreeNode *right;
 	TreeNode(int x) : val(x), left(NULL), right(NULL) {}
-	
+
 };
 
-class Solution {
+class Solution2 {
 public:
 
 
@@ -654,7 +654,7 @@ public:
 	typedef string T;
 	//332.
 	template<class T>
-	vector<string> findItinerary(vector<vector<T>>& Egdes, T start="JFK") {
+	vector<string> findItinerary(vector<vector<T>>& Egdes, T start = "JFK") {
 		// 在有向多重图寻找一条不重复便利路径
 		// 图是起点--->终点的边表示形式
 		map<T, vector<T>> node_dicts; // 字典形式图
@@ -665,9 +665,9 @@ public:
 			string &k = x[0];
 			string &v = x[1];
 			pathsum[make_tuple(k, v)] += 1;
-			if (node_dicts.count(k) > 0) 
+			if (node_dicts.count(k) > 0)
 				node_dicts[k].insert(node_dicts[k].end(), v);
-			else 
+			else
 				node_dicts.insert({ k, vector<T>{v} });
 		}
 
@@ -697,7 +697,7 @@ public:
 		for (const auto& next : node_dicts[start]) {
 			tuple<T, T> key{ start, next };
 			if (pd.count(key) == 0)
-				pd.insert({ key, 0});
+				pd.insert({ key, 0 });
 
 			if (pd[key] < pathsum[key]) {
 				pd[key] += 1;
@@ -741,7 +741,7 @@ public:
 		if (step[3] < step[1]) return false;
 		if (step[2] <= step[0]) return true;
 		if ((step[4] >= (step[2] - step[0])) &&
-			(step[4] <= step[2]) &&( step[5] >= step[3] - step[1]))
+			(step[4] <= step[2]) && (step[5] >= step[3] - step[1]))
 			return true;
 		return false;
 	}
@@ -754,13 +754,13 @@ public:
 	}
 
 	//336.
-	typedef pair<int,int> VT;
+	typedef pair<int, int> VT;
 	VT robdfs(TreeNode* root) {
 		if (root == nullptr)
-			return {0, 0};
+			return{ 0, 0 };
 		auto rl = robdfs(root->left);
 		auto rr = robdfs(root->right);
-		return { max(root->val + rl.second + rr.second, rl.first + rr.first), rl.first + rr.first };
+		return{ max(root->val + rl.second + rr.second, rl.first + rr.first), rl.first + rr.first };
 	}
 	int rob(TreeNode* root) {
 		VT result = robdfs(root);
@@ -850,7 +850,7 @@ private:
 public:
 	NestedIterator(vector<NestedInteger> &nestedList) {
 		label = 0;
-		for (int i =0; i<nestedList.size(); i++) {
+		for (int i = 0; i < nestedList.size(); i++) {
 			if (nestedList[i].isInteger()) {
 				//下一个数为整数
 				nv.push_back(nestedList[i].getInteger());
@@ -919,9 +919,9 @@ string reverseVowels(string s) {
 	while (front < rear) {
 		int flo = -1;
 		if (s[front] < 93)
-			 flo = find(vowels.begin(), vowels.end(), s[front] +32) - vowels.begin();
+			flo = find(vowels.begin(), vowels.end(), s[front] + 32) - vowels.begin();
 		else
-			 flo = find(vowels.begin(), vowels.end(), s[front]) - vowels.begin();
+			flo = find(vowels.begin(), vowels.end(), s[front]) - vowels.begin();
 		if (flo != vowels.size()) {
 			// 左侧找到元音
 			// 寻找右侧元音字母
@@ -936,7 +936,7 @@ string reverseVowels(string s) {
 					newsl += s[rear--]; newsr = s[front++] + newsr;
 					break;
 				}
-				else{
+				else {
 					newsr = s[rear--] + newsr;
 					if (rear == front) {
 						newsl += s[front++];
@@ -944,7 +944,7 @@ string reverseVowels(string s) {
 				}
 			}
 		}
-		else{
+		else {
 			newsl += s[front++];
 			if (front == rear) {
 				newsr = s[rear--] + newsr;
@@ -955,15 +955,15 @@ string reverseVowels(string s) {
 }
 
 vector<int> topKFrequent(vector<int>& nums, int k) {
-	
+
 	map<int, int> frequent;
 	for (int i = nums.size() - 1; i >= 0; i--)
 		if (frequent.count(nums[i]) == 0)
 			frequent.insert({ nums[i],1 });
 		else
 			frequent[nums[i]]++;
-	vector<pair<int,int>> vs(frequent.begin(), frequent.end());
-	sort(vs.begin(), vs.end(), [](const pair<int, int>& v1,const pair<int, int>& v2) {
+	vector<pair<int, int>> vs(frequent.begin(), frequent.end());
+	sort(vs.begin(), vs.end(), [](const pair<int, int>& v1, const pair<int, int>& v2) {
 		return v1.second > v2.second;
 	});
 	vector<int> result;
@@ -973,7 +973,7 @@ vector<int> topKFrequent(vector<int>& nums, int k) {
 	return result;
 }
 vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
-	set<int> n1(nums1.begin(),nums1.end()), n2(nums2.begin(),nums2.end());
+	set<int> n1(nums1.begin(), nums1.end()), n2(nums2.begin(), nums2.end());
 	vector<int> result;
 	set_intersection(n1.begin(), n1.end(), n2.begin(), n2.end(), back_inserter(result));
 	return result;
@@ -995,9 +995,9 @@ int maxEnvelopes(vector<vector<int>>& envelopes) {
 	vector<SN> start;
 	for (int i = envelopes.size() - 1; i >= 0; i--)
 	{
-		if (dict.count(envelopes[i]) == 0){
+		if (dict.count(envelopes[i]) == 0) {
 			dict.insert({ envelopes[i],vector<SN>() }),
-			in.insert({ envelopes[i],vector<SN>() });
+				in.insert({ envelopes[i],vector<SN>() });
 		}
 		pathlen.insert({ envelopes[i], 1 });
 		for (int j = i - 1; j >= 0; j--) {
@@ -1095,7 +1095,7 @@ bool isPerfectSquare(int num) {
 
 //371.
 int getSum(int a, int b) {
-	return a+b;
+	return a + b;
 }
 
 int guess(int num) {
@@ -1114,15 +1114,15 @@ int guessNumber(int n) {
 	while ((guess(high)) < 1) {
 		low = high, high *= 2;
 	}
-	
+
 	int mid = 0, g = 0;
 	while (low < high) {
 		cout << low << " " << high << " " << mid << endl;
 		mid = (low + high) / 2;
 		g = guess(mid);
 		if (g == 0) return mid;
-		if (g == 1) high = mid ;
-		if (g == -1) low = mid ;
+		if (g == 1) high = mid;
+		if (g == -1) low = mid;
 	}
 	return -1;
 }
@@ -1134,17 +1134,17 @@ vector<int> largestDivisibleSubset(vector<int>& nums) {
 	//FList 存储当前位置的最大结果
 	vector<vector<int>> FList(nums.size(), vector<int>());
 	int maxcount = 0;
-	for (int i = nums.size()-1; i >= 0; i--) {
+	for (int i = nums.size() - 1; i >= 0; i--) {
 		FList[i].push_back(nums[i]);
 		int temp = i;
-		for (int j = i+1; j < nums.size(); j++) {
+		for (int j = i + 1; j < nums.size(); j++) {
 			temp = nums[j] % nums[i] == 0 && FList[j].size() >= FList[temp].size()
-				?j:temp;
+				? j : temp;
 		}
-		if(i != temp)
+		if (i != temp)
 			for_each(FList[temp].begin(), FList[temp].end(),
 				[&](int x) {FList[i].push_back(x); });
-		maxcount = FList[i].size() > FList[maxcount].size()?i:maxcount;
+		maxcount = FList[i].size() > FList[maxcount].size() ? i : maxcount;
 	}
 	return FList[maxcount];
 }
@@ -1186,12 +1186,12 @@ int superPow(int a, vector<int>& b) {
 	int exp = 0;
 	int phi = euler(c);
 
-	for (int i = 0; i <b.size(); i++)
+	for (int i = 0; i < b.size(); i++)
 		exp = (exp * 10 + b[i]) % phi;
 
 	return quick_pow(a, exp, c);
 }
-class comp{
+class comp {
 	//仅适用于373.
 public:
 	bool operator()(vector<int> x, vector<int> y) {
@@ -1224,17 +1224,17 @@ int getMoneyAmount2(int n) {
 //376.
 int wiggleMaxLength(vector<int>& nums) {
 	if (nums.size() <= 1) return nums.size();
-	while (nums[1] == nums[0]&&nums.size()>1)
+	while (nums[1] == nums[0] && nums.size()>1)
 		nums.erase(nums.begin());
 	if (nums.size() <= 2) return nums.size();
-	int pre = nums[1]>nums[0] ? 1 : -1, next = 1;
+	int pre = nums[1] > nums[0] ? 1 : -1, next = 1;
 
 	for (auto iter = nums.begin() + 2; iter != nums.end(); iter++) {
 		if (*(iter) == *(iter - 1)) {
 			nums.erase(iter), iter--;
 			continue;
 		}
-		next = (*(iter)>*(iter - 1)) ? 1 : -1;
+		next = (*(iter) > *(iter - 1)) ? 1 : -1;
 		if (pre == next)
 			nums.erase(iter - 1), iter--;
 		pre = next;
@@ -1245,8 +1245,8 @@ int wiggleMaxLength(vector<int>& nums) {
 //377. 
 int combinationSum4(vector<int>& nums, int target) {
 	//暴力动态规划，我觉得很慢
-	vector<int> dp(target+1, 0);
-	for (int i = 1; i < target+1; i++) {
+	vector<int> dp(target + 1, 0);
+	for (int i = 1; i < target + 1; i++) {
 		for (size_t j = 0; j < nums.size(); j++) {
 			if (i == nums[j])
 				dp[i] += 1;
@@ -1259,16 +1259,16 @@ int combinationSum4(vector<int>& nums, int target) {
 
 //387.
 int firstUniqChar(string s) {
-	vector<int> d(26,0);
+	vector<int> d(26, 0);
 	for (char c : s)
 		d[c - 'a']++;
 	string news;
-	for (int i = 0; i < d.size(); i++) 
+	for (int i = 0; i < d.size(); i++)
 		if (d[i] == 1) {
 			char c = i + 'a';
 			news += c;
 		}
-	
+
 	int index = s.find_first_of(news);
 	return index;
 }
@@ -1293,7 +1293,7 @@ int sumOfLeftLeaves(TreeNode* root) {
 		stack.pop_back();
 		if (root->right == nullptr)
 			count += root->val;
-		
+
 		stack.push_back(root->right);
 	}
 
@@ -1306,7 +1306,7 @@ int kthSmallest(vector<vector<int>>& matrix, int k) {
 			nums.push_back(x);
 	}
 	nth_element(nums.begin(), nums.begin() + k - 1, nums.end());
-	return nums[k-1];
+	return nums[k - 1];
 }
 
 //380.
@@ -1319,7 +1319,7 @@ public:
 
 	/** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
 	bool insert(int val) {
-		if (result.count(val)==0) {
+		if (result.count(val) == 0) {
 			result.insert({ val, val });
 			return true;
 		}
@@ -1339,7 +1339,7 @@ public:
 
 	/** Get a random element from the set. */
 	int getRandom() {
-		vector<pair<int,int>> list(result.begin(), result.end());
+		vector<pair<int, int>> list(result.begin(), result.end());
 		int random = rand() % (result.size());
 		return list[random].first;
 	}
@@ -1353,7 +1353,7 @@ class Solution3821 {
 public:
 	/** @param head The linked list's head.
 	Note that the head is guaranteed to be not null, so it contains at least one node. */
-	Solution3821(ListNode* head):head(head) {
+	Solution3821(ListNode* head) :head(head) {
 		List_size = -1;
 	}
 
@@ -1381,7 +1381,7 @@ class Solution382 {
 public:
 	/** @param head The linked list's head.
 	Note that the head is guaranteed to be not null, so it contains at least one node. */
-	Solution382(ListNode* head){
+	Solution382(ListNode* head) {
 		ListNode* p = head;
 		while (p) {
 			List.push_back(p->val);
@@ -1401,7 +1401,7 @@ private:
 //384
 class Solution384 {
 public:
-	Solution384(vector<int>& nums):nums(nums), stactic_nums(nums){
+	Solution384(vector<int>& nums) :nums(nums), stactic_nums(nums) {
 	}
 
 	/** Resets the array to its original configuration and return it. */
@@ -1434,7 +1434,7 @@ vector<int> lexicalOrder(int n) {
 //391.
 
 //填充
-void FillArea(vector<vector<int>>& area, const vector<int>& rect){
+void FillArea(vector<vector<int>>& area, const vector<int>& rect) {
 	for (int j = rect[1]; j <= rect[3]; j++)
 		for (int i = rect[0]; i <= rect[2]; i++)
 			area[i][j] = 1;
@@ -1448,7 +1448,7 @@ bool isRectangleCover(vector<vector<int>>& rectangles) {
 	int area = 0;
 	for (int i = 0; i < rectangles.size(); i++) {
 		vector<point> ps{ point{ rectangles[i][0],rectangles[i][1] },
-			point{ rectangles[i][0],rectangles[i][3] }, 
+			point{ rectangles[i][0],rectangles[i][3] },
 			point{ rectangles[i][2],rectangles[i][1] },
 			point{ rectangles[i][2],rectangles[i][3] } };
 		area += (rectangles[i][2] - rectangles[i][0])*(rectangles[i][3] - rectangles[i][1]);
@@ -1527,9 +1527,9 @@ int longestSubstring(string s, int k) {
 		else
 			Alphabetlocal[s[i]].push_back(i);
 	}
-	vector<int> index{-1};
+	vector<int> index{ -1 };
 	for (map<char, int>::iterator iter = AlphabetIndex.begin();
-			iter != AlphabetIndex.end(); iter++) {
+	iter != AlphabetIndex.end(); iter++) {
 		if (iter->second < k)
 			for (int j = Alphabetlocal[iter->first].size() - 1; j >= 0; j--)
 				index.push_back(Alphabetlocal[iter->first][j]);
@@ -1539,10 +1539,131 @@ int longestSubstring(string s, int k) {
 	if (index.size() == 2)
 		return s.size();
 	for (int i = 0; i < index.size() - 1; i++)
-		result = max(result, 
+		result = max(result,
 			longestSubstring(
 				s.substr(index[i] + 1, index[i + 1] - index[i] - 1), k));
 	return result;
+}
+
+//397.
+int integerReplacement(long long  n) {
+	if (n == 1) return 0;
+	if (n == 2) return 1;
+	if (n % 2 == 1)
+		return min(integerReplacement(n + 1), integerReplacement(n - 1)) + 1;
+	else
+		return integerReplacement(n / 2) + 1;
+}
+//398.
+class Solution398 {
+private:
+	vector<int> nums;
+	map<int, vector<int>> dict;
+public:
+	Solution398(vector<int>& nums) :nums(nums) {
+		for (int i = nums.size() - 1; i >= 0; i--) {
+			if (dict.count(nums[i]) == 0)
+				dict.insert({ nums[i], vector<int>{i} });
+			else
+				dict[nums[i]].push_back(i);
+		}
+	}
+
+	int pickMoreTimes(int target) {
+		const auto& v = dict[target];
+		int randomIndex = rand() % v.size();
+		return v[randomIndex];
+	}
+
+	int pickOneTime(int target) {
+		int d = 1;
+		int res;
+		for (int i = nums.size() - 1; i >= 0; i--) {
+			if (nums[i] == target) {
+				if (rand() % d == 0)
+					res = i;
+				d++;
+			}
+		}
+		return res;
+	}
+};
+
+//399.
+class Fraction { // 简易 分数结构
+private:
+	double numerator; //分子
+	double denominator; // 分母
+public:
+	Fraction() :numerator(1), denominator(1) {}
+	Fraction(double x, double y = 1) :numerator(x), denominator(y) {}
+	double Ftod() {
+		return numerator / denominator;
+	}
+	friend Fraction operator* (const Fraction& lf, const Fraction& rf);
+};
+Fraction operator* (const Fraction& lf, const Fraction& rf) {
+	return Fraction(lf.numerator*rf.numerator, lf.denominator*rf.denominator);
+}
+
+double FindcalcBFS(map<string, vector<string>>& edges, map <pair<string, string>, Fraction>& weight, string& x, string& y) {
+	if (weight.count({ x,y }) == 1) {
+		return  weight[{x, y}].Ftod();
+	}
+	vector<string> stack{ x };
+	set<string> path{x};
+	bool flag = true;
+	while (!stack.empty() && flag) {
+		string temp = stack.back();
+		stack.pop_back();
+		for (int i = 0; i < edges[temp].size(); i++) {
+			if (path.count(edges[temp][i]) == 0) {
+				if (weight.count({ x, edges[temp][i] }) == 0)
+					weight.insert({ { x, edges[temp][i] }, weight[{x, temp}] * weight[{temp,  edges[temp][i]}] });
+				stack.push_back(edges[temp][i]);
+				path.insert(edges[temp][i]);
+			}
+			if (edges[temp][i] == y) {
+				return weight[{x, y}].Ftod();
+			}
+		}
+	}
+	return -1.0;
+}
+
+vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+	map <pair<string, string>, Fraction> weight;
+	map<string, vector<string>> edges;
+	for (int i = equations.size() - 1; i >= 0; i--) {
+		pair<string, string > key(equations[i][0], equations[i][1]);
+		if (weight.count(key) == 0) {
+			weight.insert({ key, Fraction(values[i]) });
+			weight.insert({ { equations[i][1], equations[i][0] }, Fraction(1, values[i]) });
+		}
+		if (edges.count(equations[i][0]) == 0) {
+			edges.insert({ equations[i][0] ,{ equations[i][1] } });
+		}
+		else{
+			edges[equations[i][0]].push_back(equations[i][1]);
+			}
+		if (edges.count(equations[i][1]) == 0) {
+			edges.insert({ equations[i][1] ,{ equations[i][0] } });
+		}
+		else {
+			edges[equations[i][1]].push_back(equations[i][0]);
+		}
+	}
+	vector<double> results;
+	for (vector<vector<string>>::iterator iter = queries.begin(); iter != queries.end(); iter++) {
+		
+		if (edges.count((*iter)[0]) == 0 || edges.count((*iter)[1]) == 0)
+			results.push_back(-1.0); 
+		else if((*iter)[0]==(*iter)[1])
+			results.push_back(1.0);
+		else
+			results.push_back(FindcalcBFS(edges, weight, (*iter)[0], (*iter)[1]));
+	}
+	return results;
 }
 
 static int x = []() {
@@ -1552,9 +1673,16 @@ static int x = []() {
 }();
 
 int main() {
-	auto f = longestSubstring("ababbc"
-		,2);
-	cout << f << endl;
+	vector<vector<string>> equations{ vector<string> {"a","b"},
+		vector<string>{"c","d"} };
+	vector<double> values{ 1.0,1.0 };
+	vector<vector<string>> queries{ vector<string> {"a","c"},
+		vector<string> {"b","d"},
+		vector<string> {"b","a"},
+		vector<string> {"d","c"}
+	};
+	auto result = calcEquation(equations, values,queries);
+	copy(result.begin(), result.end(), ostream_iterator<double>(cout, " "));
 }
 
 
