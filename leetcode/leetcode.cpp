@@ -1,5 +1,6 @@
 #include<set>
 #include<deque>
+#include<bitset>
 #include<queue>
 #include<iterator>
 #include<memory>
@@ -16,7 +17,21 @@
 #include<numeric>
 using namespace std;
 
+class A {
+private:
+	int x, y;
+public:
+	A() :x(0), y(0) {}
+	void setx(int x) { this->x = x; }
+	void sety(int y) { this->y = y; }
+	friend int get(A);
+};
 
+
+
+int get(A a) {
+	return a.x + a.y;
+}
 ////Definition for singly-linked list.
 //struct ListNode {
 //	int val;
@@ -1666,23 +1681,76 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
 	return results;
 }
 
+int CaluSum(bitset<8> b) {
+	//计算数字二进制中1的个数
+	int result=0;
+	for (int i = 0; i < 8; i++)
+		result += b[i];
+	return result;
+}
+
+void CalueDict(int num, double MAX, map<int, vector<int>>& dict) {
+	// 计算数字二进制中1的个数字典
+	dict.insert({ 0, {0} });
+	for (int i = 1; i < min(MAX, pow(2, num)); i++) {
+		auto b = bitset<8>(i);
+		int s = CaluSum(b);
+		if (dict.count(s) == 0) {
+			dict.insert({ s, {i} });
+		}
+		else {
+			dict[s].push_back(i);
+		}
+	}
+
+}
+
+string getresult(int lt, int rt) {
+	// 格式化字符时间
+	string result = to_string(lt)+":";
+	if (rt <= 9) {
+		result += "0" + to_string(rt);
+	}
+	else {
+		result += to_string(rt);
+	}
+	return result;
+}
+
+vector<string> CaluWatch(int num, map<int, vector<int>>& dict) {
+	// 计算表盘时间
+	vector<string> result;
+	for (int i = 0; i < min(num + 1, 4); i++) {
+		const auto& left = dict[i];
+		for (auto lt = left.begin(); lt != left.end(); lt++) {
+			if (*lt >= 12) continue;
+			const auto& right = dict[num - i];
+			for (auto rt = right.begin(); rt != right.end(); rt++) {
+				result.push_back(getresult(*lt, *rt));
+			}
+		}
+	}
+	return result;
+}
+
+//401
+vector<string> readBinaryWatch(int num) {
+	map<int, vector<int>> dict;
+	CalueDict(6, 60, dict); 
+	return CaluWatch(num, dict);
+}
+
+
 static int x = []() {
 	ios::sync_with_stdio(false);
 	cin.tie(NULL);
 	return 0;
 }();
 
+
 int main() {
-	vector<vector<string>> equations{ vector<string> {"a","b"},
-		vector<string>{"c","d"} };
-	vector<double> values{ 1.0,1.0 };
-	vector<vector<string>> queries{ vector<string> {"a","c"},
-		vector<string> {"b","d"},
-		vector<string> {"b","a"},
-		vector<string> {"d","c"}
-	};
-	auto result = calcEquation(equations, values,queries);
-	copy(result.begin(), result.end(), ostream_iterator<double>(cout, " "));
+	auto result = readBinaryWatch(0);
+	copy(result.begin(), result.end(), ostream_iterator<string>(cout, " "));
 }
 
 
