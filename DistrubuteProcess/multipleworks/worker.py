@@ -19,7 +19,7 @@ worker.work()
 
 '''
 
-from multipleworks.Manager import QueueManager
+from .Manager import QueueManager
 
 class Worker:
 

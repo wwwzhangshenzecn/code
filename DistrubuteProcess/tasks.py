@@ -1,20 +1,8 @@
-import time
-from multipleworks.worker import Worker
-
-
-def add(a, b=-1):
-    print("woker: ", a, b)
-    time.sleep(a)
-    return a+b
-
-def mul(a, b):
-    return a*b
-
-class test:
-    def run(self):
-        worker = Worker()
-        worker.register([mul, add])
-        worker.work()
+from multipleworks import worker
+def add(x, y, c):
+    return x+y+c
 
 if __name__ == '__main__':
-    test().run()
+    work =  worker.Worker()
+    work.register(add)
+    work.work()

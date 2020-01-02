@@ -1,7 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from multiprocessing import Queue, freeze_support
 from multiprocessing import Process
-from multipleworks.Manager import QueueManager, SERVER
+from .Manager import QueueManager, SERVER
 
 # 任务队列
 queue = Queue()
@@ -79,7 +79,6 @@ class middle:
         p1.start()
         p2.start()
 
-
-if __name__ == '__main__':
-
-    middle().run()
+#
+# if __name__ == '__main__':
+#     middle().run()
