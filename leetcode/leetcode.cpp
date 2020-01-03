@@ -1626,7 +1626,7 @@ double FindcalcBFS(map<string, vector<string>>& edges, map <pair<string, string>
 		return  weight[{x, y}].Ftod();
 	}
 	vector<string> stack{ x };
-	set<string> path{x};
+	set<string> path{ x };
 	bool flag = true;
 	while (!stack.empty() && flag) {
 		string temp = stack.back();
@@ -1658,9 +1658,9 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
 		if (edges.count(equations[i][0]) == 0) {
 			edges.insert({ equations[i][0] ,{ equations[i][1] } });
 		}
-		else{
+		else {
 			edges[equations[i][0]].push_back(equations[i][1]);
-			}
+		}
 		if (edges.count(equations[i][1]) == 0) {
 			edges.insert({ equations[i][1] ,{ equations[i][0] } });
 		}
@@ -1670,10 +1670,10 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
 	}
 	vector<double> results;
 	for (vector<vector<string>>::iterator iter = queries.begin(); iter != queries.end(); iter++) {
-		
+
 		if (edges.count((*iter)[0]) == 0 || edges.count((*iter)[1]) == 0)
-			results.push_back(-1.0); 
-		else if((*iter)[0]==(*iter)[1])
+			results.push_back(-1.0);
+		else if ((*iter)[0] == (*iter)[1])
 			results.push_back(1.0);
 		else
 			results.push_back(FindcalcBFS(edges, weight, (*iter)[0], (*iter)[1]));
@@ -1683,7 +1683,7 @@ vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& v
 
 int CaluSum(bitset<8> b) {
 	//计算数字二进制中1的个数
-	int result=0;
+	int result = 0;
 	for (int i = 0; i < 8; i++)
 		result += b[i];
 	return result;
@@ -1707,7 +1707,7 @@ void CalueDict(int num, double MAX, map<int, vector<int>>& dict) {
 
 string getresult(int lt, int rt) {
 	// 格式化字符时间
-	string result = to_string(lt)+":";
+	string result = to_string(lt) + ":";
 	if (rt <= 9) {
 		result += "0" + to_string(rt);
 	}
@@ -1736,10 +1736,103 @@ vector<string> CaluWatch(int num, map<int, vector<int>>& dict) {
 //401
 vector<string> readBinaryWatch(int num) {
 	map<int, vector<int>> dict;
-	CalueDict(6, 60, dict); 
+	CalueDict(6, 60, dict);
 	return CaluWatch(num, dict);
 }
 
+class Com402 {
+
+public:
+	bool operator()(pair<char, int> p1, pair<char, int> p2) {
+		return p1.first < p2.first;
+	}
+};
+
+const int find402(string& num, int start, int left) {
+	int ch = start;
+	for (int i = start + 1; i < left; i++) {
+		if (num[ch] > num[i])
+			ch = i;
+	}
+	return ch;
+}
+
+//402.
+string removeKdigits(string num, int k) {
+	/**
+	//https://leetcode.com/problems/remove-k-digits/discuss/451002/4ms-C%2B%2B-monotonous-stack-solution-using-deque
+	*  Monotonous Stack
+	*
+	*  1 4 3 2 2 1 9, aval = 3
+	*
+	*  [1]
+	*
+	*  [1, 4]
+	*
+	*  [1, 3]         aval = 2
+	*
+	*  [1, 2]         aval = 1
+	*
+	*  [1, 2, 2]      aval = 1
+	*
+	*  [1, 2, 1]      aval = 0
+	*
+	*  [1, 2, 1, 9]   aval = 0
+	*/
+	int n = num.size(), bk = k;
+	deque<char> deque;
+	deque.push_back(num[0]);
+	for (int i = 1; i < n; i++) {
+		while (!deque.empty() && deque.back()>num[i] && k > 0)
+			deque.pop_back(), k--;
+		deque.push_back(num[i]);
+	}
+
+	while (deque.front() == '0') {
+		deque.pop_front();
+	}
+	while (deque.size() > n - bk)
+		deque.pop_back();
+	if (deque.empty())
+		return "0";
+	string result = "";
+	while (!deque.empty())
+		result += deque.front(),
+		deque.pop_front();
+	return result;
+}
+
+// 删除字符串前K小
+typedef pair<char, int> PAIR;
+class ComK {
+public:
+	bool operator()(const PAIR& p1, const PAIR& p2) {
+		return p1.first > p2.first;
+	}
+};
+
+string DeleteK(string str, int k) {
+	priority_queue < PAIR, vector<PAIR>, ComK> deque;
+	int left = str.size() - k;
+	for (int i = 0; i < str.size(); i++)
+		if (deque.size() < left)
+			deque.push({ str[i], i });
+		else if (deque.top().first < str[i])
+			deque.pop(), deque.push({ str[i], i });
+
+	vector<PAIR> index;
+	while (!deque.empty())
+		index.push_back(deque.top()), deque.pop();
+
+	sort(index.begin(), index.end(),
+		[](const PAIR& p1, const PAIR& p2)->bool {return p1.second < p2.second; });
+
+	string result = "";
+	for (vector<PAIR>::iterator iter = index.begin(); iter != index.end(); iter++)
+		result += (*iter).first;
+
+	return result;
+}
 
 static int x = []() {
 	ios::sync_with_stdio(false);
@@ -1749,8 +1842,10 @@ static int x = []() {
 
 
 int main() {
-	auto result = readBinaryWatch(0);
-	copy(result.begin(), result.end(), ostream_iterator<string>(cout, " "));
+	auto result = DeleteK("hgfedcba", 5);
+	cout << result << endl;
+
+	//copy(result.begin(), result.end(), ostream_iterator<string>(cout, " "));
 }
 
 
