@@ -336,10 +336,21 @@ int NumberOne1(int num) {
 	return count;
 }
 
-int main() {
-	int result = atoi("12345");
-	cout << result << endl;
 
-	//copy(results.begin(), results.end(), ostream_iterator<int>(cout, ""));
-	return 0;
-}
+
+
+
+
+
+
+
+
+
+
+//int main() {
+//	int result = atoi("12345");
+//	cout << result << endl;
+//
+//	//copy(results.begin(), results.end(), ostream_iterator<int>(cout, ""));
+//	return 0;
+//}
