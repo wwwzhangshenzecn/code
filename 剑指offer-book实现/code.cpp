@@ -1,6 +1,8 @@
 /*
-此为剑指offer第二版 C++ 题目解法
+此为剑指offer第二版 C++ 题目解法,
+算法中可能会存在逻辑/边界错误，请自己修正。
 */
+#include<numeric>
 #include<algorithm>
 #include<iostream>
 #include<vector>
@@ -8,7 +10,43 @@
 #include<string>
 #include<iterator>
 #include<set>
+#include<atomic>
+#include<mutex>
+
 using namespace std;
+
+////T2
+//class singleton {
+//private:
+//	singleton();
+//	singleton(singleton* s) {}
+//public:
+//	static singleton* getInstance();
+//	static singleton* instance;
+//
+//};
+//
+//static singleton* singleton::instance = nullptr;
+//
+//std::atomic<singleton*> singleton::instance;
+//std::mutex singleton::mutex;
+//
+//
+//singleton* singleton::getInstance() {
+//	singleton* temp = instance.load(std::memory_order_relaxed);
+//	std::_Atomic_thread_fence(std::memory_order_acquire);
+//	if (temp == nullptr) {
+//		std::lock_guard<std::mutex> lock(mutex);
+//		temp = instance.load(std::memory_order_relaxed);
+//		if (temp == nullptr) {
+//			temp = new singleton;
+//			std::_Atomic_thread_fence(std::memory_order_release);
+//			instance.store(temp, std::memory_order_relaxed);
+//		}
+//	}
+//	return temp;
+//}
+
 
 //T3
 set<int> duplicateNumber(const vector<int>& arr) {
@@ -337,20 +375,300 @@ int NumberOne1(int num) {
 }
 
 
+//T16
+double PowerWithUnsignedExponent(double base, int exponent) {
+	if (exponent == 0)
+		return 1;
+	if (exponent == 1)
+		return base;
+	double result = PowerWithUnsignedExponent(base, exponent >> 1);
+	result *= result;
+	if (exponent & 1)
+		result *= base;
+	return result;
+}
+
+const double SuperPower(double base, int exponent) {
+	if (base == 0.0) return 0;
+	bool flag;
+	if (exponent >= 0) {
+		flag = true;
+	}
+	else {
+		flag = false;
+		exponent *= -1;
+	}
+
+	double result = PowerWithUnsignedExponent(base, exponent);
+	if (flag)
+		return result;
+	else
+		return 1.0 / result;
+}
+
+//T17
+
+void PrintDigitsRecuse(int deep, vector<int>& num, int result = 0) {
+	if (deep != 0) {
+		for (int i = 0; i < num.size(); i++)
+			PrintDigitsRecuse(deep - 1, num, result * 10 + num[i]);
+	}
+	else {
+		cout << result << endl;
+	}
+}
+
+void PrintToMaxofDigits(int n) {
+	vector<int> num(10, 0);
+	iota(num.begin(), num.end(), 0);
+	PrintDigitsRecuse(n, num);
+}
+
+//T18
+void DeleteNode(LinkNode*  pListHead, LinkNode* pToBeDel) {
+	if (pListHead == nullptr || pToBeDel == nullptr)
+		return;
+	if (pListHead == pToBeDel) {
+		delete pListHead;
+		pListHead = nullptr;
+	}
+
+	if (pToBeDel->next != nullptr) {
+		//node 不是尾节点，如果是尾节点，必须从头开始查找
+		LinkNode* pNext = pToBeDel->next;
+		pToBeDel->value = pNext->value;
+		pToBeDel->next = pNext->next;
+		delete pNext;
+	}
+	else {
+		// 尾节点，从头查找
+		LinkNode* pre = pListHead;
+		while (pre->next != pToBeDel)
+			pre = pre->next;
+		pre->next == nullptr;
+		delete pToBeDel;
+		pToBeDel = nullptr;
+	}
+}
+
+
+//T19
+// DFA / NDFA
+bool mathCoreDFA(string& pattern, string& str) {
+	if (str.size() == 0 && pattern.size() == 0)
+		return true;
+	if (str.size() != 0 && pattern.size() == 0)
+		return false;
+	if (pattern.size() == 1) {
+		if (pattern == "." && str.size() == 1)
+			return true;
+		else
+			return pattern == str;
+	}
+	if (pattern[1] == '*')
+		if (str.size() == 0)
+			return mathCoreDFA(pattern.substr(2, pattern.size()), str);
+	if (pattern[0] == str[0])
+		return mathCoreDFA(pattern.substr(2, pattern.size()), str.substr(1, str.size())) ||
+		mathCoreDFA(pattern, str.substr(1, str.size()));
+	else
+		return mathCoreDFA(pattern.substr(2, pattern.size()), str);
+	if (pattern[0] == str[0] || pattern[0] == '.')
+		return mathCoreDFA(pattern.substr(1, pattern.size()), str.substr(1, str.size()));
+	return false;
+}
+
+bool match(string pattern, string str) {
+	if (pattern == str)
+		return true;
+
+	if (pattern.size() == 0)
+		return false;
+
+	return mathCoreDFA(pattern, str);
+}
+
+//T20
+
+bool ScanUnsignedInterger(const string& str, int& pos) {
+	const int prepos = pos;
+	while (pos < str.size() && str[pos] >= '0' && str[pos] <= '9')
+		++pos;
+	return pos > prepos;
+}
+
+bool ScanInterger(const string& str, int &pos) {
+	if (str[pos] == '+' || str[pos] == '-')
+		++pos;
+	return ScanUnsignedInterger(str, pos);
+}
+
+bool IsNumeric(string str) {
+	if (str.size() == 0)
+		return false;
+	int pos = 0;
+	bool numeric = ScanInterger(str, pos);
+	if (str[pos] == '.') {
+		numeric = numeric || ScanUnsignedInterger(str, ++pos);
+	}
+	if (str[pos] == 'e' || str[pos] == 'E') {
+		numeric = numeric || ScanInterger(str, ++pos);
+	}
+	return numeric;
+}
+
+//T21
+bool Judge(int index) { // 判断是否是奇数
+	if (index & 1)
+		return true;
+	else
+		return false;
+}
+
+void ReorderArr(vector<int>& arr, bool(*Judge)(int)) {
+	int left = 0, right = arr.size() - 1;
+	while (left < right) {
+		while (Judge(arr[left]))
+			++left;
+		while (!Judge(arr[right]))
+			++right;
+		if (left < right)
+			swap(arr.begin() + left, arr.begin() + right);
+	}
+}
+
+//T22
+LinkNode* FindKNode(LinkNode* pLinkHead, unsigned int k) {
+	if (pLinkHead == nullptr)
+		return nullptr;
+	LinkNode* p1 = pLinkHead;
+	while (--k) {
+		if (p1->next == nullptr) // 链长长度小于k
+			return nullptr;
+		p1 = p1->next;
+	}
+	LinkNode* p2 = pLinkHead;
+	while (p1 != nullptr) {
+		p2 = p2->next;
+		p1 = p1->next;
+	}
+	return p2;
+}
+
+//T23
+
+LinkNode* MeetingNode(LinkNode* pLinkHead) {
+	LinkNode* pfast = pLinkHead->next;
+	LinkNode* pslow = pLinkHead;
+	while (pfast != pslow) {
+		if (pfast == nullptr)
+			return pfast;
+
+		pslow = pslow->next;
+		pfast = pfast->next;
+		if (pfast != nullptr)
+			pfast = pfast->next;
+	}
+}
+
+
+LinkNode* EntryNodeOfLoop(LinkNode* pLinkHead) {
+	if (pLinkHead == nullptr) return nullptr;
+	LinkNode* meetNode = MeetingNode(pLinkHead);
+	if (meetNode == nullptr) // 无环
+		return nullptr;
+
+	int count = 1;
+	const LinkNode* local = meetNode;
+	LinkNode* CNode = meetNode;
+	while (CNode->next != local) {
+		++count;
+		CNode = CNode->next;
+	}
+	LinkNode* p1 = pLinkHead;
+	while (count--) {
+		p1 = p1->next;
+	}
+
+	LinkNode* p2 = pLinkHead;
+	while (p2 != p1) {
+		p2 = p2->next;
+		p1 = p1->next;
+	}
+	return p2;
+}
+
+//T24
+LinkNode* ReverseLink(LinkNode* pLinkhead) {
+	if (pLinkhead == nullptr) return nullptr;
+	if (pLinkhead->next == nullptr) return pLinkhead;
+
+	LinkNode* pre = pLinkhead;
+	LinkNode* pos = pLinkhead->next;
+	while (pos != nullptr) {
+		if (pre == pLinkhead)
+			pre->next == nullptr;
+		LinkNode* next = pos->next;
+		pos->next = pre;
+		pre = pos;
+		pos = next;
+	}
+	pLinkhead = pre;
+	return pLinkhead;
+}
+
+//T25
+LinkNode* Merge(LinkNode* pHead1, LinkNode* pHead2) {
+	LinkNode* pMergeHead = new LinkNode(0);
+	LinkNode* p1 = pHead1;
+	LinkNode* p2 = pHead2;
+	LinkNode* r = pMergeHead;
+	while (p1 != nullptr || p2 != nullptr) {
+		if (p1->value < p2->value) {
+			r->next = new LinkNode(p1->value);
+			r = r->next;
+			p1 = p1->next;
+		}
+		else {
+			r->next = new LinkNode(p2->value);
+			r = r->next;
+			p2 = p2->next;
+		}
+	}
+	if (p1 == nullptr)
+		p1 = p2;
+	while (p1 != nullptr) {
+		r->next = new LinkNode(p1->value);
+		r = r->next;
+		p1 = p1->next;
+	}
+	return pMergeHead;
+}
+
+//T26
+
+bool DoesTree1HasTree2(BinaryTreeNode* root1, BinaryTreeNode* root2) {
+	if (root2 == nullptr) return true;
+	if (root1 == nullptr) return false;
+	if (root1->value != root2->value)
+		return false;
+	return DoesTree1HasTree2(root1->left, root2->right) || DoesTree1HasTree2(root1->right, root2->right);
+}
+
+bool HasSubTree(BinaryTreeNode* root1, BinaryTreeNode* root2) {
+	if (root1 == nullptr || root2 == nullptr) return false;
+	if (root1->value == root2->value) {
+		if (DoesTree1HasTree2(root1, root2))
+			return true;
+		return HasSubTree(root1->left, root2) || HasSubTree(root1->right, root2);
+	}
+}
 
 
 
-
-
-
-
-
-
-
-//int main() {
-//	int result = atoi("12345");
-//	cout << result << endl;
-//
-//	//copy(results.begin(), results.end(), ostream_iterator<int>(cout, ""));
-//	return 0;
-//}
+int main() {
+	auto result = IsNumeric("+12.3e+5");
+	cout << result << endl;
+	//copy(results.begin(), results.end(), ostream_iterator<int>(cout, ""));
+	return 0;
+}
