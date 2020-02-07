@@ -863,7 +863,7 @@ void FindPath34(BinaryTreeNode* root, int expecteSum, vector<BinaryTreeNode* > p
 
 
 //T35
-void CopyComplexList35(ComplexListNode* source, ComplexListNode* dest){
+void CopyComplexList35(ComplexListNode* source, ComplexListNode* &dest){
 	if (source == nullptr) { dest = nullptr; return; }
 	ComplexListNode* copy_source = source;
 	while (source != nullptr) {
@@ -883,12 +883,18 @@ void CopyComplexList35(ComplexListNode* source, ComplexListNode* dest){
 	auto r = copy_source;
 	source = new ComplexListNode(0);
 	dest = new ComplexListNode(0);
+	auto rs = source, rd = dest;
 	while (r != nullptr) {
-		source->next = r;
-		dest->next = r->next;
+		rs->next = r;
+		rd->next = r->next;
+
+		rs = rs->next;
+		rd = rd->next;
+
 		r = r->next;
 		r = r->next;
 	}
+	dest = dest->next;
 }
 
 
@@ -919,22 +925,57 @@ void ConvertNode(BinaryTreeNode* pNode, BinaryTreeNode** pLastOfList) {
 	*pLastOfList = pCurrent;
 	if (pCurrent->right != nullptr)
 		ConvertNode(pCurrent->right, pLastOfList);
+	int a = 1;
+}
+
+void F(int *a, int n) {
+	a[1] = 3;
+	for (int i = 0; i < n; i++) {
+		cout << a[i] << endl;
+	}
+}
+
+//T37
+void SerializeTree(BinaryTreeNode* root , deque<string>& ser){
+	if (root == nullptr) {
+		ser.push_back("$");
+		return;
+	}
+	ser.push_back(to_string(root->value));
+	SerializeTree(root->left, ser);
+	SerializeTree(root->right, ser);
 
 }
 
+BinaryTreeNode* DeserializeTree(deque<string>& ser) {
+	if (ser.front() == "$") {
+		ser.pop_front();
+		return nullptr;
+	}
+	int value = atoi(ser.front().c_str());
+	ser.pop_front();
+	return new BinaryTreeNode(value, DeserializeTree(ser), DeserializeTree(ser));
+}
+
+//T38
+
+
+
+
+
+
+
+
+__attribute((constructor)) void before() {
+	cout << "123"<<endl;
+}
 
 int main() {
-	ComplexListNode* n1 = new ComplexListNode(1);
-	ComplexListNode* n2 = new ComplexListNode(2);
-	ComplexListNode* n3 = new ComplexListNode(3);
-	ComplexListNode* n4 = new ComplexListNode(4);
-	ComplexListNode* n5 = new ComplexListNode(5);
-
-	n1->next = n2; n2->next = n3; n3->next = n4; n4->next = n5;
-	n1->Sibling = n3; n2->Sibling = n5; n3->Sibling = n3; n4->Sibling = n1; n5->Sibling = n2;
-	ComplexListNode* dest;
-	CopyComplexList35(n1,dest);
-
+	
+	deque<string> rootS{ "1","2","$","$","3","$","$" };
+	BinaryTreeNode* root;
+	cout << root << endl;
+	root = DeserializeTree( rootS);
 
 	/*vector<int> result = {2,2,2,1,2,3,3,4};
 	nth_element(result.begin(), result.begin()+result.size()/2, result.end());
