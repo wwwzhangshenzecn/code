@@ -14,7 +14,7 @@
 #include<mutex>
 #include<map>
 using namespace std;
-
+//int Partition(vector<int>& data, int flag, int start, int end);
 ////T2
 //class singleton {
 //private:
@@ -53,10 +53,10 @@ public:
 	int value;
 	ComplexListNode* next;
 	ComplexListNode* Sibling;
-	
-	ComplexListNode(int a, 
-		ComplexListNode* next = nullptr, ComplexListNode* sib=nullptr):value(a),
-		next(next), Sibling(sib){}
+
+	ComplexListNode(int a,
+		ComplexListNode* next = nullptr, ComplexListNode* sib = nullptr) :value(a),
+		next(next), Sibling(sib) {}
 	ComplexListNode(ComplexListNode* other) {
 		value = other->value;
 		next = other->next;
@@ -633,7 +633,7 @@ LinkNode* ReverseLink(LinkNode* pLinkhead) {
 	while (pos != nullptr) {
 		if (pre == pLinkhead)
 			pre->next == nullptr;
-		LinkNode* next=pos->next;
+		LinkNode* next = pos->next;
 		pos->next = pre;
 		pre = pos;
 		pos = next;
@@ -644,7 +644,7 @@ LinkNode* ReverseLink(LinkNode* pLinkhead) {
 
 //T25
 LinkNode* Merge(LinkNode* pHead1, LinkNode* pHead2) {
-	LinkNode* pMergeHead=new LinkNode(0);
+	LinkNode* pMergeHead = new LinkNode(0);
 	LinkNode* p1 = pHead1;
 	LinkNode* p2 = pHead2;
 	LinkNode* r = pMergeHead;
@@ -701,18 +701,18 @@ void MirrorRescursiverly(BinaryTreeNode* root) {
 //T28
 
 bool isSymmertrical(BinaryTreeNode* left, BinaryTreeNode*right) {
-	if (left == nullptr && right == nullptr) 
+	if (left == nullptr && right == nullptr)
 		return true;
 	if (left == nullptr || right == nullptr)
 		return false;
-	if (left->value != right->value) return 
+	if (left->value != right->value) return
 		false;
 	return isSymmertrical(left->left, right->right) &&
 		isSymmertrical(left->right, right->left);
 }
 
-bool isSymmertrical(BinaryTreeNode* root){
-	if (root == nullptr) 
+bool isSymmertrical(BinaryTreeNode* root) {
+	if (root == nullptr)
 		return false;
 	return isSymmertrical(root->left, root->right);
 }
@@ -725,18 +725,18 @@ void PrintMatrixClockwisely(vector<vector<int>> matrix, size_t start = 0) {
 	const size_t col = matrix[0].size();
 	while (start >= 0 && start < row - start && start < col - start) {
 		pair<int, int> lt{ start, start };
-		pair<int, int> lb{ row - start-1 , start };
-		pair<int, int> rt{ start,col - start -1};
-		pair<int, int> rb{ row - start-1 , col - start -1};
+		pair<int, int> lb{ row - start - 1 , start };
+		pair<int, int> rt{ start,col - start - 1 };
+		pair<int, int> rb{ row - start - 1 , col - start - 1 };
 
 		for (int i = lt.second; i <= rt.second; i++) {
 			cout << matrix[lt.first][i] << " ";
 		}
-		for (int i = rt.first+1; i < rb.first; i++) {
+		for (int i = rt.first + 1; i < rb.first; i++) {
 			cout << matrix[i][rt.second] << " ";
 		}
 
-		if (rb.first!=lt.first) {
+		if (rb.first != lt.first) {
 			for (int i = rb.second; i >= lb.second; i--) {
 				cout << matrix[rb.first][i] << " ";
 			}
@@ -764,11 +764,11 @@ public:
 };
 
 template<typename T>
-void MinStack<T>::push(T t){
+void MinStack<T>::push(T t) {
 	data.push(t);
 	if (dmin.size() == 0 || dmin.top() > t)
 		dmin.push(t);
-	else 
+	else
 		dmin.push(dmin.top());
 }
 
@@ -778,7 +778,7 @@ T MinStack<T>::top() {
 }
 
 template<typename T>
-T MinStack<T>::min(){
+T MinStack<T>::min() {
 	return dmin.top();
 }
 
@@ -790,21 +790,21 @@ void MinStack<T>::pop() {
 
 //T31
 template<typename T>
-bool IsPopOrder(const vector<T>& pPush,const vector<T>& pPop){
+bool IsPopOrder(const vector<T>& pPush, const vector<T>& pPop) {
 	stack<T> st;
 	size_t i = 0, j = 0;
 
 	for (; i < pPush.size(); i++) {
 		st.push(pPush[i]);
 		while (st.size()>0 && st.top() == pPop[j])
-			st.pop(),j++;
+			st.pop(), j++;
 	}
 	return j == pPop.size();
 }
 
 //T32
 void PrintFromTopToBotton(BinaryTreeNode* root) {
-	if (root == nullptr) 
+	if (root == nullptr)
 		return;
 	deque<BinaryTreeNode*> d1;
 	d1.push_back(root);
@@ -820,13 +820,13 @@ void PrintFromTopToBotton(BinaryTreeNode* root) {
 }
 
 //T33
-bool VerifySquenceOfBST(const vector<int>& sequence,int start, int end) {
+bool VerifySquenceOfBST(const vector<int>& sequence, int start, int end) {
 	if (end == 0) return false;
-	if (end - start <=2)
+	if (end - start <= 2)
 		return true;
-	const int last = sequence[end-1];
+	const int last = sequence[end - 1];
 	int index = start;
-	while (index < end - 1 && sequence[index]<last) {
+	while (index < end - 1 && sequence[index] < last) {
 		index++;
 	}
 	for (int i = index; i < end - 1; i++) {
@@ -835,7 +835,7 @@ bool VerifySquenceOfBST(const vector<int>& sequence,int start, int end) {
 	}
 
 	return VerifySquenceOfBST(sequence, start, index) &&
-		VerifySquenceOfBST(sequence, index, end-1);
+		VerifySquenceOfBST(sequence, index, end - 1);
 
 }
 
@@ -844,13 +844,13 @@ void FindPath(BinaryTreeNode* root, int expecteSum) {
 	if (root = nullptr)
 		return;
 	vector<BinaryTreeNode* > path;
-	
+
 }
 
 void FindPath34(BinaryTreeNode* root, int expecteSum, vector<BinaryTreeNode* > path) {
 	if (root == nullptr) return;
 	if (expecteSum == 0) {
-		for each(const BinaryTreeNode* r in path){
+		for each(const BinaryTreeNode* r in path) {
 			cout << r->value << " ";
 		}
 		cout << endl;
@@ -863,7 +863,7 @@ void FindPath34(BinaryTreeNode* root, int expecteSum, vector<BinaryTreeNode* > p
 
 
 //T35
-void CopyComplexList35(ComplexListNode* source, ComplexListNode* &dest){
+void CopyComplexList35(ComplexListNode* source, ComplexListNode* &dest) {
 	if (source == nullptr) { dest = nullptr; return; }
 	ComplexListNode* copy_source = source;
 	while (source != nullptr) {
@@ -900,7 +900,7 @@ void CopyComplexList35(ComplexListNode* source, ComplexListNode* &dest){
 
 //T36
 void ConvertNode(BinaryTreeNode* pNode, BinaryTreeNode** pLastOfList);
-BinaryTreeNode* Convert(BinaryTreeNode* pRootOfTree){
+BinaryTreeNode* Convert(BinaryTreeNode* pRootOfTree) {
 	BinaryTreeNode* pLastNodeOfTree = nullptr;
 	ConvertNode(pRootOfTree, &pLastNodeOfTree);
 	BinaryTreeNode* pHeadOfList = pLastNodeOfTree;
@@ -936,7 +936,7 @@ void F(int *a, int n) {
 }
 
 //T37
-void SerializeTree(BinaryTreeNode* root , deque<string>& ser){
+void SerializeTree(BinaryTreeNode* root, deque<string>& ser) {
 	if (root == nullptr) {
 		ser.push_back("$");
 		return;
@@ -944,7 +944,6 @@ void SerializeTree(BinaryTreeNode* root , deque<string>& ser){
 	ser.push_back(to_string(root->value));
 	SerializeTree(root->left, ser);
 	SerializeTree(root->right, ser);
-
 }
 
 BinaryTreeNode* DeserializeTree(deque<string>& ser) {
@@ -958,27 +957,225 @@ BinaryTreeNode* DeserializeTree(deque<string>& ser) {
 }
 
 //T38
+void Permutation(string str, int start = 0) {
+	if (start == str.size())
+		cout << str << endl;
 
-
-
-
-
-
-
-
-__attribute((constructor)) void before() {
-	cout << "123"<<endl;
+	for (int i = start; i < str.size(); i++) {
+		swap(str[start], str[i]);
+		Permutation(str, start + 1);
+		swap(str[i], str[start]);
+	}
 }
 
+vector<char> getResult(vector<bool> vb, string word) {
+	vector<char> result;
+	for (int i = 0; i < word.size(); ++i)
+		if (vb[i])
+			result.push_back(word[i]);
+	return result;
+}
+
+vector<vector<char>> combination(string word, int m) {
+	if (m <= 0) return{};
+	m = min(m, static_cast<int>(word.size()));
+	vector<bool> vb(word.size(), false);
+	vector<vector<char>> results;
+	results.push_back(vector<char>(word.begin(), word.end()));
+	for (int i = 0; i < m; ++i)
+		vb[i] = true;
+	for (int i = m - 1; i >= 0; --i) {
+		for (int j = i + 1; j < word.size(); ++j) {
+			if (!vb[j]) {
+				swap(vb[j], vb[j - 1]);
+				results.push_back(getResult(vb, word));
+			}
+
+		}
+	}
+	return results;
+}
+
+//T39
+int MoreThanHalfNum(vector<int> numbers) {
+	if (numbers.size() == 0)
+		return -1;
+	if (numbers.size() == 1)
+		return numbers[0];
+	vector<int> count{ numbers[0], 1 };
+	for (int i = 1; i < numbers.size(); ++i) {
+		if (count[0] == numbers[i])
+			++count[1];
+		else {
+			if (--count[1] == 0) {
+				count[0] = numbers[i];
+				count[1] = 1;
+			}
+		}
+	}
+	return count[0];
+}
+//快排
+int Partition(vector<int>& data, int start, int flag, int end) {
+	if (data.size() == 0 || start <0 || end > data.size() || flag<start || flag >= end
+		|| start > end)
+		return -1;
+
+	int small = start - 1;
+	swap(data[flag], data[end - 1]);
+	for (int index = start; index < end - 1; ++index) {
+		if (data[index] < data[end - 1]) {
+			if (++small != index)
+				swap(data[index], data[small]);
+		}
+	}
+	swap(data[++small], data[end - 1]);
+	return small;
+}
+
+void QuickSort(vector<int>& data, int start, int end) {
+	if (start >= end)
+		return;
+
+	int index = rand() % data.size();
+	index = Partition(data, start, index, end);
+	if (index > start)
+		QuickSort(data, start, index);
+	if (index < end)
+		QuickSort(data, index + 1, end);
+}
+
+//T40
+vector<int> GetLestNumber(vector<int> data, int k) {
+	if (data.size() == 0) return{};
+	vector<int> reuslt;
+	int start = 0, end = data.size();
+	int index = Partition(data, start, start, end);
+	while (index != k - 1) {
+		if (index > k - 1) {
+			index = Partition(data, start, start, index);
+		}
+		else {
+			start = index + 1;
+			index = Partition(data, start, start, end);
+		}
+	}
+	return vector<int>(data.begin(), data.begin() + k);
+}
+
+//海量数据
+vector<int > GetLeastBN(vector<int > data, int k) {
+	if (data.size() == 0)return{};
+	int maxDate = data[0];
+	vector<int > result;
+	make_heap(result.begin(), result.end());
+
+	for each(int num in data) {
+		if (result.size() < k){
+			result.push_back(num);
+			push_heap(result.begin(), result.end());
+		}
+		else {
+			if (num < result[0]) {
+				pop_heap(result.begin(), result.end());
+				result.pop_back();
+				result.push_back(num);
+				push_heap(result.begin(), result.end());
+			}
+		}
+	}
+	return result;
+}
+
+//T41 ---- 已修正书中算法
+template<typename T> 
+class DynamicArray{
+private:
+	vector<T> max;
+	vector<T> min;
+public:
+
+	DynamicArray() :max({}), min({}) {}
+
+	void push_back(T t) {
+		if (((min.size() + max.size()) & 1) == 0) {
+			if (max.size() > 0 && max[0] > t) {
+				pop_heap(max.begin(), max.end(), less<T>());
+				min.push_back(max.back());
+				max.pop_back();
+				push_heap(min.begin(), min.end(), greater<T>());
+			}
+			max.push_back(t);
+			push_heap(max.begin(), max.end(), less<T>());
+		}
+		else {
+			if (min.size() > 0 && min[0] < t) {
+
+				pop_heap(min.begin(), min.end(), greater<T>());
+				max.push_back(min.back());
+
+				min.pop_back();
+				push_heap(max.begin(), max.end(), less<T>());
+
+			}
+			min.push_back(t);
+			push_heap(min.begin(), min.end(), greater<T>());
+		}
+
+		if(min.size()-max.size() == 2){
+			max.push_back(min[0]);
+			push_heap(max.begin(), max.end(), less<T>());
+			pop_heap(min.begin(), min.end(), greater<int>());
+			min.pop_back();
+		}
+		if (min.size() - max.size() == -2) {
+			min.push_back(max[0]);
+			push_heap(min.begin(), min.end(), greater<T>());
+			pop_heap(max.begin(), max.end(), less<T>());
+			max.pop_back();
+		}
+	}
+
+	T getMiddle() {
+		if ((min.size() + max.size()) == 0) 
+			return -1;
+		if (((min.size() + max.size()) & 1) == 0) {
+			return (min[0] + max[0])/2;
+		}
+		else {
+			return min[0];
+		}
+	}
+
+	~DynamicArray(){}
+};
+
+template<typename T>
+T GetMiddleNumber(vector<T>& data) {
+	if (data.size() == 0) return T(-1);
+	if (data.size() == 1) return data[0];
+	DynamicArray<T> array;
+	for each(const T& t in data) {
+		array.push_back(t);
+	}
+	return array.getMiddle();
+}
+
+
 int main() {
-	
+
+	vector<int> result = { 5};
+	int mid = GetMiddleNumber<int>(result);
+	cout << mid << endl;
+
+	/*
 	deque<string> rootS{ "1","2","$","$","3","$","$" };
 	BinaryTreeNode* root;
 	cout << root << endl;
 	root = DeserializeTree( rootS);
-
-	/*vector<int> result = {2,2,2,1,2,3,3,4};
-	nth_element(result.begin(), result.begin()+result.size()/2, result.end());
+	*/
+	//vector<int> result = {2,2,2,1,2,3,3,4};
+	//nth_element(result.begin(), result.begin()+result.size()/2, result.end());
 	copy(result.begin(), result.end(), ostream_iterator<int>(cout, ""));
-	return 0;*/
+	return 0;
 }
