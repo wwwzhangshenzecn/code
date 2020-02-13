@@ -13,6 +13,7 @@
 #include<atomic>
 #include<mutex>
 #include<map>
+#include<list>
 using namespace std;
 //int Partition(vector<int>& data, int flag, int start, int end);
 ////T2
@@ -1125,12 +1126,14 @@ public:
 		if(min.size()-max.size() == 2){
 			max.push_back(min[0]);
 			push_heap(max.begin(), max.end(), less<T>());
+
 			pop_heap(min.begin(), min.end(), greater<int>());
 			min.pop_back();
 		}
 		if (min.size() - max.size() == -2) {
 			min.push_back(max[0]);
 			push_heap(min.begin(), min.end(), greater<T>());
+
 			pop_heap(max.begin(), max.end(), less<T>());
 			max.pop_back();
 		}
@@ -1161,13 +1164,660 @@ T GetMiddleNumber(vector<T>& data) {
 	return array.getMiddle();
 }
 
+//T42
+int FindGreaterSumOfSub(vector<int>& data) {
+	if (data.size() == 0)return -1;
+	vector<int> sumOfSub(data.size()+1, 0);
+	for (int i = 0; i < data.size(); ++i) {
+		sumOfSub[i+1]=max(data[i]+sumOfSub[i], 0);
+	}
+	return *max_element(sumOfSub.begin(), sumOfSub.end());
+}
+
+//T43
+long long NumberOfOne(long long n){
+	if (n <= 0) return 0;
+	if (n < 10) return 1;
+
+	string sn = to_string(n);
+	int topNum = sn[0] - '0';
+	long long topCount = 0;
+	long long midCount = 0;
+	// 
+	if(topNum == 1) {
+		topCount = n - pow(10, sn.size() - 1) + 1;
+	}
+	else {
+		topCount = pow(10, sn.size()-1);
+		
+	}
+	//这midCount 没想通。。。死脑筋我靠
+	midCount = (topNum)* pow(10, sn.size() - 2)*(sn.size() - 1);
+	
+	long long lastCount = NumberOfOne(n % (int)pow(10, sn.size()-1));
+	return topCount + midCount + lastCount;
+}
+
+//T44
+
+void ADDOne44(vector<int>& n) {
+	if (n.size() == 0) return;
+	int flag = (n[0] + 1) / 10;
+	n[0] = (n[0] + 1) % 10;
+	for (int i = 1; i < n.size(); i++) {
+		if (flag == 0)
+			break;
+		flag = (n[i] + flag) / 10;
+		n[i] = (n[i] + flag) % 10;
+	}
+	if (flag == 1)
+		n.push_back(1);
+}
+
+int digitAtIndex(int index) {
+	if (index == 0)return 0;
+	vector<int> n(1, 0);
+	while (index > 0) {
+		ADDOne44(n);
+		if(n[0] == 10){
+			n.push_back(1);
+			n[0] = 0;
+		}
+		int c = index - n.size();
+		if (c <= 0)
+			break;
+		index -= n.size();
+	}
+	reverse(n.begin(), n.end());
+	return n[index-1];
+}
+
+//T45
+
+int compare45(int n1, int n2) {
+	string sn1 = to_string(n1);
+	string sn2 = to_string(n2);
+	return sn1 + sn2 < sn2 + sn1;
+}
+
+void PrintMinNumber(vector<int>& num) {
+	if (num.size() == 0) return;
+	sort(num.begin(), num.end(), compare45);
+}
+
+//T46
+int GetTranlationCount(const string& number, map<string, int>& dict) {
+	if (number.size() <=1) {
+		return 1;
+	}
+
+	if (dict.count(number) > 0)
+		return dict[number];
+
+	int first = number[0] - '0';
+	int firstCount = GetTranlationCount(number.substr(1, number.size()), dict);
+	int secondCount = 0;
+
+
+	int second = (number[0] - '0') * 10 + (number[1] - '0');
+	if (second >= 0 && second <= 25)
+		secondCount = GetTranlationCount(number.substr(2, number.size()), dict);
+	dict.insert({ number, firstCount + secondCount });
+	return firstCount + secondCount;
+}
+
+int GetTranlationCount(const string& number) {
+	if (number.size() == 0) return 0;
+	map<string, int> dict;
+	return GetTranlationCount(number, dict);
+}
+
+
+//T47
+int getMaxValueOfGift(vector<vector<int>> matrix) {
+	if (matrix.size() == 0 || matrix[0].size() == 0) return 0;
+	vector<vector<int>> value(matrix.size()+1, vector<int>(matrix[0].size(), 0));
+
+	for (int i = 0; i <matrix.size(); ++i) {
+		for (int j =0; j<matrix[0].size(); ++j) {
+			value[i + 1][j + 1] = max(value[i][j + 1], value[i + 1][j]) + matrix[i][j];
+		}
+	}
+
+	return value[matrix.size()][matrix[0].size()];
+}
+
+//T48
+int longestSubstringWithoutDuplication(const string & str) {
+	int i = 0;
+	vector<int> flag(26, 0);
+	int start = i, result = 0;
+	while (i < str.size()) {
+		if (flag[str[i] - 'a'] == 0) {
+			flag[str[i] - 'a'] = 1;
+		}
+		else {
+			result = max(result, accumulate(flag.begin(), flag.end(), 0));
+			generate(flag.begin(), flag.end(), []() {return 0; });
+			flag[str[i] - 'a'] = 1;
+		}
+		++i;
+	}
+	return max(result, accumulate(flag.begin(), flag.end(), 0));
+}
+
+//T49
+
+int GetUglyNumber(int k) {
+	vector<int> numBase{ 2,3,5 };
+	vector<int> num{2,3,5};
+	make_heap(num.begin(), num.end(), greater<int>());
+	int result;
+	while (k-- > 0) {
+		pop_heap(num.begin(), num.end(), greater<int>());
+		result = num.back();
+		num.pop_back();
+
+		for each(int n in numBase) {
+			num.push_back(n*result);
+			push_heap(num.begin(), num.end(), greater<int>());
+		}
+	}
+	return result;
+}
+
+//T50
+
+
+char FirstNotRepetition(const string& str) {
+	vector<char> schar(256,0);
+	for each(const char& c in str) {
+		++schar[c];
+	}
+
+	for (int i = 0; i <schar.size(); ++i) {
+		if (schar[i] == 1)
+			return i;
+	}
+	return 0;
+}
+
+//T51
+//这个是没想明白
+
+
+//T52
+struct ListNode {
+	int key;
+	ListNode* next;
+};
+
+unsigned int GetLengthList(ListNode* Head) {
+	if (Head == nullptr) return -1;
+	unsigned int HLength = 0;
+	ListNode* r = Head;
+	while (r != nullptr) {
+		++HLength;
+		r = r->next;
+	}
+	return HLength;
+}
+
+ListNode* FindFirstCommonNode(ListNode* Head1, ListNode* Head2) {
+	if (Head1 == nullptr || Head2 == nullptr) return nullptr;
+	unsigned int HLength1= GetLengthList(Head1), 
+		HLength2= GetLengthList(Head2);
+	int step;
+	ListNode* h1 = Head1;
+	ListNode* h2 = Head2;
+	if (HLength1 > HLength2) {
+		while (HLength1-- == HLength2)
+			h1 = h1->next;
+	}
+	else {
+		while (HLength2-- == HLength1)
+			h2 = h2->next;
+	}
+	while (h1 != nullptr) {
+		if (h1 == h2)
+			return h2;
+		h1 = h1->next;
+		h2 = h2->next;
+	}
+	return nullptr;
+}
+
+//T53
+int GetFirstK(const vector<int>& data, int k, int start, int end){
+	if (start > end) return - 1;
+	int mid = (start + end) >> 1;
+	int middate = data[mid];
+	if (middate == k) {
+		if ( (mid > 0 && data[mid - 1] != k) || mid == 0)
+			return mid;
+		else {
+			end = mid - 1;
+		}
+	}
+	else if (middate > k)
+		end = mid - 1;
+	else
+		start = mid + 1;
+	return GetFirstK(data, k, start, end);
+}
+
+int GetLastK(const vector<int>& data, int k, int start, int end) {
+	if (start > end) return -1;
+	int mid = (start + end) >> 1;
+	int middate = data[mid];
+	if (middate == k) {
+		if ( (mid < data.size()-1 && data[mid + 1] != k) || mid == data.size() - 1)
+			return mid;
+		else {
+			start = mid + 1;
+		}
+	}
+	else if (middate > k)
+		end = mid - 1;
+	else
+		start = mid + 1;
+	return GetLastK(data, k, start, end);
+}
+
+int GetNumberOfK(const vector<int>& data, int k) {
+	if (data.size() == 0)return -1;
+	int number = 0;
+	int first = GetFirstK(data, k, 0, data.size() - 1);
+	int last = GetLastK(data, k, 0, data.size() - 1);
+	if (first > -1 && last > -1)
+		number = last - first + 1;
+	return number;
+}
+
+//T53-2
+//O(n)
+int GetMissingNumber1(vector<int> numbers) {
+	for (int i = 0; i < numbers.size(); ++i) {
+		if (numbers[i] != i)
+			return i;
+	}
+	return -1;
+}
+
+int GetMissingNumber(const vector<int>& numbers, int n) {
+	int start = 0, end = numbers.size() - 1;
+	
+	
+	while(start <= end){
+		int mid = (start + end) >> 1;
+		if (mid != numbers[mid]){
+			if (mid == 0)
+				return 0;
+			end = mid - 1;
+		}
+		else {
+			if (mid == numbers.size() && mid == numbers[mid])
+				return mid+1;
+
+			if (mid < numbers.size() && mid + 1 != numbers[mid + 1])
+				return mid+1;
+			else {
+				start = mid + 1;
+			}
+		}
+	}
+	return - 1;
+}
+
+//53-3
+int GetNumberSameAsIndex(const vector<int>& data) {
+	if (data.size() == 0)
+		return -1;
+	int left = 0, right = data.size() - 1;
+	while (left <= right) {
+		int mid = (left + right) >> 1;
+		if (mid == data[mid])
+			return data[mid];
+		else if (mid > data[mid])
+			left = mid + 1;
+		else
+			right = mid - 1;
+	}
+
+	return -1;
+}
+
+//T54
+BinaryTreeNode* KthNode(BinaryTreeNode* root, unsigned int k) {
+	stack<BinaryTreeNode*> st;
+	st.push(root);
+	while (!st.empty()) {
+		BinaryTreeNode* root = st.top();
+		while (root->left != nullptr) {
+			st.push(root);
+			root = root->left;
+		}
+
+		root = st.top();
+		st.pop();
+		--k;
+		if (k == 0)
+			return root;
+		if(root->right!=nullptr)
+			st.push(root->right);	
+	}
+	return nullptr;
+}
+
+//T55
+int TreeDepth(BinaryTreeNode* root) {
+	if (root == nullptr)
+		return 0;
+	return 1 + max(TreeDepth(root->left), TreeDepth(root->right));
+}
+
+//T55-2
+bool IsBlanced(BinaryTreeNode* root, int* depth) {
+	if (root == nullptr) {
+		*depth = 0;
+		return true;
+	}
+
+	int left = 0, right = 0;
+	if (IsBlanced(root->left, &left) && IsBlanced(root->right, &right)) {
+		int diff = left - right;
+		if (diff >= -1 && diff <= 1) {
+			*depth = 1 + max(left, right);
+			return true;
+		}
+	}
+	return false;
+}
+
+//T56
+// 我自己的解法： O(n) T(n)
+vector<int> FindNUmbersApperOnce(const vector<int>& data) {
+
+	vector<int> result;
+	vector<int> count{ 10, 0 };
+
+	for each(int n in data)
+		++count[n];
+
+	for each(int n in count) {
+		if (n == 1)
+			result.push_back(n);
+	}
+	return result;
+}
+
+//T56-2
+int FindNumberApperOnce(const vector<int>& data) {
+
+	int bitSum[32] = { 0 };
+
+	for (int i = 0; i < data.size(); ++i) {
+		int bitmask = 1;
+		for (int j = 31; j >= 0;--j){
+			int bit = data[i] & bitmask;
+			if (bit != 0)
+				++bitSum[j];
+			bitmask = bitmask << 1;
+		}
+	}
+
+	int result=0;
+	for (int i = 0; i < 32; ++i) {
+		result = result << 1;
+		result += bitSum[i] % 3;
+	}
+	return result;
+}
+
+//T57
+vector<int> FindNumbersWithSum(const vector<int>& data, int sum) {
+	if (data.size() == 0) return{};
+	int i = 0, j = data.size() - 1;
+	if (data[i] + data[j] < sum)
+		return{};
+
+	while (i < j) {
+		if (data[i] + data[j] < sum)
+			++i;
+		else if(data[i] + data[j] > sum)
+			--j;
+		else
+			return{ data[i], data[j] };
+	}
+	return{};
+}
+
+//T57-2
+
+vector<vector<int> > FindContinueSequence(int sum) {
+	int i = 1, j = 2;
+	vector<vector<int> > result;
+	while (i < j && j <= sum / 2 + 1) {
+		int temp = (i + j)*(j - i + 1) / 2;
+		if (temp == sum) {
+			vector<int> t;
+			for (int x = i; x <= j; ++x)
+				t.push_back(x);
+			result.push_back(t);
+			++j;
+		}
+		else if (temp > sum)
+			++i;
+		else
+			++j;
+	}
+	return result;
+}
+
+//T58
+void ReceverSentence(string & str) {
+	reverse(str.begin(), str.end());
+	int pre = 0, next = -1;
+	for (int i = 0; i < str.size(); ++i) {
+		if (str[i] != ' ') continue;
+		if (next < pre) {
+			next = i;
+			reverse(str.begin() + pre, str.begin() + next);
+		}
+		else {
+			pre = next+1;
+		}
+	}
+}
+
+//T59
+vector<int> MaxInWindows(const vector<int>& num, unsigned int size) {
+	if (size <= 0 || num.size() == 0)
+		return{};
+	deque<int> windows;
+	vector<int> result;
+	for (int i = 0; i < size;i++){
+		while (windows.size() > 0 && num[windows.front()] < num[i])
+			windows.pop_front();
+		windows.push_back(i);
+	}
+
+	for (int i = size; i < num.size(); ++i) {
+		result.push_back(num[windows.front()]);
+		//清除候选
+		while (windows.size() > 0 && num[i] > num[windows.back()])
+			windows.pop_back();
+		//处理最大值被弹出的情况
+		if (windows.size() > 0 && i - windows.front() >= size)
+			windows.pop_front();
+		windows.push_back(i);
+	}
+	result.push_back(num[windows.front()]);
+	return result;
+}
+
+//T60
+int PrintProbability(int n, int sum) {
+	vector<int> num(7, 0);
+	for (int i = 1; i <= 6; ++i)
+		num[i] = 1;
+	for (int i = 2; i <= n; ++i) {
+		vector<int> point(i * 6+1, 0);
+		for (int j = i; j <= 6 * (i-1); ++j) {
+			point[j] = accumulate(num.begin() + max(1, j - 6), num.begin() + j, 0);
+		}
+		for (int j = 6 * (i - 1) + 1; j <= 6 * i; ++j) {
+			point[j] = accumulate(num.begin() + (j-6), num.end(), 0);
+		}
+		num = point;
+	}
+	return num[sum];
+}
+
+//T61
+bool IsContinuous(vector<int>& numbers) {
+	if (numbers.size() != 5) return false;
+	sort(numbers.begin(), numbers.end());
+	int zeroCount = 0;
+	int gap = 0;
+	for (int i = 0; i < 5; ++i) {
+		if (numbers[i] == 0)
+			++zeroCount;
+		else {
+			if (i != 0 && numbers[i-1]!=0) {
+				int g= numbers[i] - numbers[i - 1];
+				if (g == 0)
+					return false;
+				gap += g-1;
+			}
+		}
+	}
+	return gap <= zeroCount || gap==0;
+}
+
+//T62
+
+int LastRemaining1(unsigned int n, unsigned int m) {
+	if (n < 1 || m < 1)
+		return -1;
+	list<int> numbers;
+	for (int i = 0; i < n; ++i)
+		numbers.push_back(i);
+	auto iter = numbers.begin();
+	int k = m;
+	decltype(iter) next;
+	while(numbers.size()!=1){
+		if (iter == --numbers.end())
+			next = numbers.begin();
+		else {
+			next = ++iter;
+			iter--;
+		}
+		if (--k == 0) {
+			numbers.erase(iter);
+			k = m;
+		}
+		iter = next;
+	}
+	return *(numbers.begin());
+}
+
+int LastRemaining(unsigned int n, unsigned int m) {
+	if (n < 1 || m < 1)
+		return -1;
+	int last = 0;
+	for (int i = 2; i < n; ++i) {
+		last = (last + m) % i;
+	}
+	return last;
+}
+
+//T63
+int MaxDiff(const vector<int>& stores) {
+	if (stores.size() <=1) return 0;
+	int mins = stores[0];
+	int maxdiff = 0;
+	for (int i = 1; i < stores.size(); i++) {
+		maxdiff = max(maxdiff, stores[i] - mins);
+		mins = min(mins, stores[i]);
+	}
+	return maxdiff;
+}
+
+//T64
+//简历N个对象
+class Temp {
+public:
+	Temp() { ++N; Sum += N; }
+	static int Get() { return Sum; }
+	static int Reset() { N = 0; Sum = 0; }
+private:
+	static int N;
+	static int Sum;
+};
+int Temp::N = 0;
+int Temp::Sum = 0;
+
+//虚函数求解
+class A {
+public:
+	virtual int Sum(int n) {
+		return 0;
+	}
+};
+
+class B :public A {
+private:
+	A array[2];
+public:
+	virtual int Sum(int n) {
+		return array[!!n].Sum(n - 1) + n;
+	}
+};
+
+//函数指针
+typedef int(*fun)(int);
+int Solution3_Teminator(int n) {
+	return 0;
+}
+
+int Solution3_Recursion(int n) {
+	static fun f[2] = { Solution3_Teminator ,Solution3_Recursion };
+	return f[!!n](n - 1);
+}
+
+
+//T65
+int Add(int n1, int n2) {
+	int sum, Array;
+	do {
+		sum = n1^n2;
+		Array = (n1&n2) << 1;
+		n1 = sum;
+		n2 = Array;
+	} while (n2 != 0);
+	return n1;
+}
+
+//T66
+void multiply(const vector<double>& A, vector<double>& B) {
+	vector<vector<double>> m(A.size(), vector<double>(A.size(), 1));
+	for (int i = 0; i < A.size(); ++i) {
+		m[i][0] = A[0];
+		for (int j = 0; j < A.size(); ++j) {
+			if (i != j && j>0)
+				m[i][j] = m[i][j-1]*A[j];
+		}
+	}
+	for (int i = 0; i < A.size(); ++i) {
+		B.push_back(m[i][max(0, i - 1)] * m[i][A.size() - 1]);
+	}
+}
+
 
 int main() {
-
-	vector<int> result = { 5};
-	int mid = GetMiddleNumber<int>(result);
-	cout << mid << endl;
-
+	vector<double> result = { 2,3,4,5,6},B;
+	multiply(result, B);
 	/*
 	deque<string> rootS{ "1","2","$","$","3","$","$" };
 	BinaryTreeNode* root;
@@ -1176,6 +1826,6 @@ int main() {
 	*/
 	//vector<int> result = {2,2,2,1,2,3,3,4};
 	//nth_element(result.begin(), result.begin()+result.size()/2, result.end());
-	copy(result.begin(), result.end(), ostream_iterator<int>(cout, ""));
+	copy(B.begin(), B.end(), ostream_iterator<int>(cout, " "));
 	return 0;
 }
