@@ -44,7 +44,6 @@ def server(addr='', port=7999):
                 epoll.modify(fd, select.EPOLLOUT)
             elif event & select.EPOLLOUT:
                 data = pickle.dumps("server get it")
-
                 sock.sendall(pickle.dumps(len(data)))
                 sock.sendall(data)
 
